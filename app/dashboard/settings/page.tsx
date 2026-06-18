@@ -1,12 +1,18 @@
-import { Settings } from 'lucide-react'
-import { ComingSoon } from '@/components/dashboard/coming-soon'
+import { getTenant, getTeamMembers, getRolePermissions } from '@/app/actions/settings'
+import SettingsClient from './settings-client'
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const [tenant, teamMembers, permissions] = await Promise.all([
+    getTenant(),
+    getTeamMembers(),
+    getRolePermissions(),
+  ])
+
   return (
-    <ComingSoon
-      icon={<Settings className="h-7 w-7" />}
-      title="ตั้งค่าระบบ"
-      description="จัดการการตั้งค่าทั่วไป ผู้ใช้งาน และการเชื่อมต่อต่าง ๆ"
+    <SettingsClient
+      tenant={tenant ?? null}
+      teamMembers={teamMembers}
+      permissions={permissions}
     />
   )
 }
