@@ -18,13 +18,13 @@ export function CtaSection() {
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
-            href="#"
+            href="/sign-up"
             className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-white px-6 text-sm font-semibold text-primary transition-colors hover:bg-white/90 sm:w-auto"
           >
             สร้างบัญชีฟรีเลย
           </Link>
           <Link
-            href="#"
+            href="/sign-in"
             className="inline-flex h-12 w-full items-center justify-center rounded-lg border border-white/40 px-6 text-sm font-semibold text-white transition-colors hover:bg-white/10 sm:w-auto"
           >
             มีบัญชีแล้ว เข้าสู่ระบบ
@@ -47,10 +47,10 @@ export function SiteFooter() {
           <span className="text-sm text-muted-foreground">— ระบบจัดการโรงคั่วกาแฟ</span>
         </div>
         <nav aria-label="ลิงก์ท้ายหน้า" className="flex items-center gap-6">
-          <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="/sign-in" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             เข้าสู่ระบบ
           </Link>
-          <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="/sign-up" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             สมัครใช้งาน
           </Link>
           <span className="text-sm text-muted-foreground">© 2026 Roastery</span>

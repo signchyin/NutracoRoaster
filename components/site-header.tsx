@@ -23,13 +23,13 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
-            href="#"
+            href="/sign-in"
             className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
           >
             เข้าสู่ระบบ
           </Link>
           <Link
-            href="#"
+            href="/sign-up"
             className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             ทดลองฟรี

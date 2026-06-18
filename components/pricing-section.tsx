@@ -34,7 +34,7 @@ export function PricingSection() {
               ยืดหยุ่น หยุดใช้เมื่อไหร่ก็ได้ ไม่ผูกสัญญา
             </p>
             <Link
-              href="#"
+              href="/sign-up"
               className="mt-8 inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
             >
               เริ่มทดลองใช้ฟรี
@@ -55,7 +55,7 @@ export function PricingSection() {
               เทียบเท่า ฿833/เดือน — ประหยัดไป ฿2,988/ปี
             </p>
             <Link
-              href="#"
+              href="/sign-up"
               className="mt-8 inline-flex h-11 items-center justify-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               เริ่มทดลองใช้ฟรี
