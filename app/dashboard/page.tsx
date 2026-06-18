@@ -1,5 +1,6 @@
 import { getCalendarEvents } from '@/app/actions/calendar'
 import { CalendarView } from '@/components/dashboard/calendar-view'
+// cache-bust: v2
 
 export default async function CalendarPage() {
   const now = new Date()
