@@ -10,7 +10,7 @@ import {
   deleteBatch,
   type RoastBatch,
 } from '@/app/actions/roast-batches'
-import { BatchDialog } from '@/components/dashboard/batch-dialog'
+import { BatchDialog, type BatchValues } from '@/components/dashboard/batch-dialog'
 import { cn } from '@/lib/utils'
 
 // ─── Thai locale helpers ────────────────────────────────────────────────────
@@ -224,12 +224,12 @@ export function RoastCalendar({
     setPresetDate(String(b.scheduledDate))
     setDialogOpen(true)
   }
-  async function handleSave(values: Parameters<typeof createBatch>[0], id?: number) {
+  async function handleSave(values: Parameters<typeof createBatch>[0], id?: string) {
     if (id) await updateBatch(id, values)
     else await createBatch(values)
     await reload(year, month)
   }
-  async function handleDelete(id: number) {
+  async function handleDelete(id: string) {
     await deleteBatch(id)
     await reload(year, month)
   }

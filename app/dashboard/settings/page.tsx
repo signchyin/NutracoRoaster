@@ -8,11 +8,17 @@ export default async function SettingsPage() {
     getRolePermissions(),
   ])
 
+  type EditableRole = 'sales' | 'operations' | 'finance' | 'viewer'
+  const editablePerms = permissions.filter(
+    (p): p is typeof p & { role: EditableRole } =>
+      (p.role as string) !== 'owner',
+  )
+
   return (
     <SettingsClient
       tenant={tenant ?? null}
       teamMembers={teamMembers}
-      permissions={permissions}
+      permissions={editablePerms}
     />
   )
 }

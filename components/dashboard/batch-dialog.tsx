@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/select'
 import type { RoastBatch } from '@/app/actions/roast-batches'
 
-type Values = {
+export type BatchValues = {
   title: string
   beanOrigin: string
   roastLevel: string
@@ -41,19 +41,21 @@ const ROAST_LEVELS = [
   { value: 'dark', label: 'คั่วเข้ม (Dark)' },
 ]
 const STATUSES = [
-  { value: 'scheduled', label: 'รอคั่ว' },
+  { value: 'queued', label: 'รอคั่ว' },
   { value: 'roasting', label: 'กำลังคั่ว' },
-  { value: 'done', label: 'คั่วเสร็จ' },
-  { value: 'cancelled', label: 'ยกเลิก' },
+  { value: 'cooling', label: 'ทำเย็น' },
+  { value: 'packing', label: 'บรรจุภัณฑ์' },
+  { value: 'ready', label: 'พร้อมส่ง' },
+  { value: 'complete', label: 'เสร็จสมบูรณ์' },
 ]
 
-function emptyValues(date: string): Values {
+function emptyValues(date: string): BatchValues {
   return {
     title: '',
     beanOrigin: '',
     roastLevel: 'medium',
     quantityKg: 0,
-    status: 'scheduled',
+    status: 'queued',
     scheduledDate: date,
     startTime: '',
     notes: '',
@@ -72,10 +74,10 @@ export function BatchDialog({
   onOpenChange: (v: boolean) => void
   editing: RoastBatch | null
   presetDate: string
-  onSave: (values: Values, id?: number) => Promise<void>
-  onDelete: (id: number) => Promise<void>
+  onSave: (values: BatchValues, id?: string) => Promise<void>
+  onDelete: (id: string) => Promise<void>
 }) {
-  const [values, setValues] = useState<Values>(emptyValues(presetDate))
+  const [values, setValues] = useState<BatchValues>(emptyValues(presetDate))
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
@@ -87,7 +89,7 @@ export function BatchDialog({
         roastLevel: editing.roastLevel,
         quantityKg: editing.quantityKg,
         status: editing.status,
-        scheduledDate: String(editing.scheduledDate),
+        scheduledDate: editing.scheduledDate ?? '',
         startTime: editing.startTime ?? '',
         notes: editing.notes ?? '',
       })
@@ -96,7 +98,7 @@ export function BatchDialog({
     }
   }, [open, editing, presetDate])
 
-  function set<K extends keyof Values>(key: K, val: Values[K]) {
+  function set<K extends keyof BatchValues>(key: K, val: BatchValues[K]) {
     setValues((v) => ({ ...v, [key]: val }))
   }
 
@@ -173,7 +175,7 @@ export function BatchDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-2">
               <Label>ระดับการคั่ว</Label>
-              <Select value={values.roastLevel} onValueChange={(v) => set('roastLevel', v)}>
+              <Select value={values.roastLevel} onValueChange={(v) => setValues((prev) => ({ ...prev, roastLevel: v ?? prev.roastLevel }))}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -188,7 +190,7 @@ export function BatchDialog({
             </div>
             <div className="flex flex-col gap-2">
               <Label>สถานะ</Label>
-              <Select value={values.status} onValueChange={(v) => set('status', v)}>
+              <Select value={values.status} onValueChange={(v) => setValues((prev) => ({ ...prev, status: v ?? prev.status }))}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

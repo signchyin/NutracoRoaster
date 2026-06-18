@@ -65,10 +65,10 @@ export async function createRoastBatch(input: CreateBatchInput) {
   const tenantId = await getTenantId()
 
   const countRes = await db
-    .select({ count: sql<number>`count(*)` })
+    .select({ count: sql<number>`count(*)::int` })
     .from(roastBatches)
     .where(eq(roastBatches.tenant_id, tenantId))
-  const count = Number(countRes[0]?.count ?? 0) + 1
+  const count = Number((countRes as Array<{ count: number }>)[0]?.count ?? 0) + 1
   const year = new Date().getFullYear()
   const batch_number = `BATCH-${year}-${String(count).padStart(4, '0')}`
   const id = newId()
@@ -165,4 +165,93 @@ export async function adjustRoastedStock(id: string, delta: number) {
     .where(and(eq(roastedInventory.id, id), eq(roastedInventory.tenant_id, tenantId)))
   revalidatePath('/dashboard/roasted-inventory')
   revalidatePath('/dashboard/packing')
+}
+
+// ── Types & calendar-calendar adapter ────────────────────────────────────────
+
+/** Shape used by the roast calendar UI component */
+export type RoastBatch = {
+  id: string
+  title: string
+  beanOrigin: string
+  roastLevel: string
+  quantityKg: number
+  status: string
+  scheduledDate: string
+  startTime: string | null
+  notes: string | null
+}
+
+type CalendarBatchInput = {
+  title: string
+  beanOrigin: string
+  roastLevel: string
+  quantityKg: number
+  status: string
+  scheduledDate: string
+  startTime: string
+  notes: string
+}
+
+function toCalendarShape(b: Awaited<ReturnType<typeof getRoastBatches>>[number]): RoastBatch {
+  return {
+    id: b.id,
+    title: b.batch_name ?? b.batch_number,
+    beanOrigin: Array.isArray(b.lot_selections) && b.lot_selections.length > 0
+      ? ((b.lot_selections as unknown as { bean_name?: string }[])[0].bean_name ?? '')
+      : '',
+    roastLevel: b.roast_level,
+    quantityKg: Number(b.charge_kg),
+    status: b.status,
+    scheduledDate: b.scheduled_date ?? '',
+    startTime: null,
+    notes: b.notes ?? null,
+  }
+}
+
+export async function getBatchesInRange(start: string, end: string): Promise<RoastBatch[]> {
+  const tenantId = await getTenantId()
+  const rows = await db
+    .select()
+    .from(roastBatches)
+    .where(
+      and(
+        eq(roastBatches.tenant_id, tenantId),
+        sql`${roastBatches.scheduled_date} >= ${start}`,
+        sql`${roastBatches.scheduled_date} <= ${end}`,
+      ),
+    )
+  return rows.map((b) => toCalendarShape({ ...b, order: null }))
+}
+
+export async function createBatch(input: CalendarBatchInput): Promise<void> {
+  await createRoastBatch({
+    batch_name: input.title,
+    roast_level: input.roastLevel,
+    charge_kg: input.quantityKg,
+    status: input.status,
+    scheduled_date: input.scheduledDate,
+    notes: input.notes,
+  })
+}
+
+export async function updateBatch(id: string, input: Partial<CalendarBatchInput>): Promise<void> {
+  const tenantId = await getTenantId()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const set: any = { updated_at: new Date() }
+  if (input.title !== undefined) set.batch_name = input.title
+  if (input.roastLevel !== undefined) set.roast_level = input.roastLevel
+  if (input.quantityKg !== undefined) set.charge_kg = String(input.quantityKg)
+  if (input.status !== undefined) set.status = input.status
+  if (input.scheduledDate !== undefined) set.scheduled_date = input.scheduledDate
+  if (input.notes !== undefined) set.notes = input.notes
+  await db
+    .update(roastBatches)
+    .set(set)
+    .where(and(eq(roastBatches.id, id), eq(roastBatches.tenant_id, tenantId)))
+  revalidatePath('/dashboard/roast-queue')
+}
+
+export async function deleteBatch(id: string): Promise<void> {
+  await deleteRoastBatch(id)
 }

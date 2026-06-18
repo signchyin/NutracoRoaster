@@ -98,7 +98,7 @@ export default function OverviewClient({
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis dataKey="period" tick={{ fontSize: 11 }} />
               <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-              <Tooltip formatter={(v: number) => `฿${v.toLocaleString()}`} />
+              <Tooltip formatter={(v: unknown) => `฿${Number(v).toLocaleString()}`} />
               <Bar dataKey="revenue" fill="#3b82f6" radius={[3, 3, 0, 0]} name="รายได้" />
               <Bar dataKey="cost" fill="#86efac" radius={[3, 3, 0, 0]} name="ต้นทุน" />
               <Line dataKey="margin_pct" yAxisId="right" stroke="#f59e0b" dot={false} name="Margin %" />
@@ -114,7 +114,7 @@ export default function OverviewClient({
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis dataKey="type" tick={{ fontSize: 11 }} tickFormatter={(v) => v.toUpperCase()} />
               <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-              <Tooltip formatter={(v: number) => `฿${v.toLocaleString()}`} />
+              <Tooltip formatter={(v: unknown) => `฿${Number(v).toLocaleString()}`} />
               <Bar dataKey="revenue" fill="#3b82f6" radius={[3, 3, 0, 0]} name="ยอดขาย (฿)" />
             </BarChart>
           </ResponsiveContainer>
@@ -133,7 +133,7 @@ export default function OverviewClient({
               <YAxis dataKey="name" type="category" tick={{ fontSize: 11 }} width={110}
                 tickFormatter={(v) => v.length > 16 ? v.slice(0, 16) + '…' : v}
               />
-              <Tooltip formatter={(v: number) => `฿${v.toLocaleString()}`} />
+              <Tooltip formatter={(v: unknown) => `฿${Number(v).toLocaleString()}`} />
               <Bar dataKey="total_revenue" radius={[0, 3, 3, 0]} fill="#3b82f6" name="รายได้" />
             </BarChart>
           </ResponsiveContainer>
@@ -161,7 +161,7 @@ export default function OverviewClient({
                   ))}
                 </Pie>
                 <Legend iconType="circle" iconSize={10} formatter={(v) => <span className="text-xs">{v}</span>} />
-                <Tooltip formatter={(v: number) => `฿${v.toLocaleString()}`} />
+                <Tooltip formatter={(v: unknown) => `฿${Number(v).toLocaleString()}`} />
               </PieChart>
             </ResponsiveContainer>
           )}
