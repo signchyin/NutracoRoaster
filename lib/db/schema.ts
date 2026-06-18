@@ -1,4 +1,12 @@
-import { pgTable, text, timestamp, boolean } from 'drizzle-orm/pg-core'
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  serial,
+  integer,
+  date,
+} from 'drizzle-orm/pg-core'
 
 // --- Better Auth required tables -------------------------------------------
 // Column names are camelCase to match Better Auth's defaults. Do not rename.
@@ -77,3 +85,19 @@ export const verification = pgTable('verification', {
 //   userId: text("userId")
 //     .notNull()
 //     .references(() => user.id, { onDelete: "cascade" }),
+
+// Roast batches scheduled on the calendar.
+export const roastBatch = pgTable('roast_batch', {
+  id: serial('id').primaryKey(),
+  userId: text('userId').notNull(),
+  title: text('title').notNull(),
+  beanOrigin: text('beanOrigin').notNull().default(''),
+  roastLevel: text('roastLevel').notNull().default('medium'),
+  quantityKg: integer('quantityKg').notNull().default(0),
+  status: text('status').notNull().default('scheduled'),
+  scheduledDate: date('scheduledDate').notNull(),
+  startTime: text('startTime'),
+  notes: text('notes'),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+})
